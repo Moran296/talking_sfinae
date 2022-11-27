@@ -1,4 +1,3 @@
-
 struct StringStruct {
     string: [u8; 80],
 }
@@ -13,8 +12,6 @@ impl StringStruct {
         StringStruct { string }
     }
 }
-
-
 
 trait ToStr {
     fn c_str<'a>(&'a self) -> &'a str;

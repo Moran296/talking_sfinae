@@ -37,7 +37,7 @@ void callingFoo() {
 
     - When we call a template function, the compiler tries to deduce the template parameters from the arguments.
         - name lookup: the compiler looks for the function name in the current scope.
-        - for template functions, the compiler tries to switch all template instances with the parameter passe.
+        - for template functions, the compiler tries to replace all template instances with the parameter passed.
         - If the susbsitution is successful, it is added to the overload set.
         - If the substitution is not successful, it is not added to the overload set.
         - If the overload set is empty, the compiler will throw an error.
@@ -84,7 +84,7 @@ decltype(std::declval<T>().c_str(), void()) PrintMe(T t) {
     std::cout << t.c_str() << std::endl;
 }
 
-//overload for types that have talk()
+//overload for types that have talk() (auto here says first evalute parameters and then return type)
 template <typename T>
 auto PrintMe(T t) -> decltype(t.talk(), void()) {
     std::cout << t.talk() << std::endl;

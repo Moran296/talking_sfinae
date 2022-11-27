@@ -30,7 +30,7 @@ struct has_c_str<T, decltype(std::declval<T>().c_str(), void())>  : std::is_same
 // as a default parameter int* = 0
 template <typename T>
 void PrintMe_1(T t, typename my_enable_if<has_c_str<T>::value, int>::type = 0) {
-// collapses to:  void PrintMe_2(T t, int = 0), can we get read of int?
+// collapses to:  void PrintMe_1(T t, int = 0), can we get read of int?
     std::cout << t.c_str() << " 1"<< std::endl;
 }
 
