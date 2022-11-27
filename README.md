@@ -19,6 +19,9 @@ Type traits
 ## four.cpp
 enable_if, using type traits and enable if for sfinae
 
+## four_and_a_half.cpp
+A small exercise to show how to use enable_if to sfinae a function
+
 ## five.cpp
 if constexper, using it instead enable_if
 
