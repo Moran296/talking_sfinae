@@ -36,6 +36,8 @@ auto f_2() -> double
     return 5;
 }
 
+auto l2 = [](auto param) -> auto { return param; }; // too many autos makes c programmers cry
+
 // 2. =================== DECLTYPE ===================
 
 // I have a function
