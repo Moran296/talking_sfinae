@@ -25,15 +25,15 @@
 auto a = 5; 
 
 // What is auto deduced to?
-auto f() { return 5; } // f is a function that returns an int
+auto f_1() { return 5; } // f_1 is a function that returns an int
 
 // What is l1? what is param?
-auto l1 = [](auto param) { return param; }; // param is a template parameter
+auto l1 = [](auto param) { return param; }; // NOTE: param is a template parameter
 
 // what is this strange syntax? what is auto?
-auto function() -> double
+auto f_2() -> double
 {
-    return 5.0;
+    return 5;
 }
 
 // 2. =================== DECLTYPE ===================
@@ -41,6 +41,7 @@ auto function() -> double
 // I have a function
 int foo() { return 5; }
 
+// I have a struct
 struct Goo {
     static char staticFunc() { return 'a'; }
     long memberFunc() { return 5; }
@@ -50,7 +51,7 @@ struct Goo {
 //what type is x?
 decltype(foo()) x = 10; 
 //what type is z?
-decltype(Goo::staticFunc()) z = 'b'; // y is a char
+decltype(Goo::staticFunc()) z = 'b';
 
 // Why is this a compile error???
 decltype(Goo::memberFunc()) wooops = 5; // error! 
