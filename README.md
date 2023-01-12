@@ -1,5 +1,7 @@
 # talking_sfinae
 A presentation regarding template metaprogramming and sfinae - past, present and future
+Here it is presented at TandemG in Hebrew
+https://youtu.be/UibvKYw4IDA
 
 This is a small talk regarding SFINAE and template deduction from C++11 to C++20 (and some RUST).
 Prior knowledge of CPP is assumed.
