@@ -1,5 +1,6 @@
 # talking_sfinae
-A presentation regarding template metaprogramming and sfinae - past, present and future
+A presentation regarding template metaprogramming and sfinae - past, present and future.
+
 Here it is presented at TandemG in Hebrew
 https://youtu.be/UibvKYw4IDA
 
