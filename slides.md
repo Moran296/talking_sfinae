@@ -43,12 +43,12 @@ Let's review some of the new things we got when C++11 came out..
 <!-- pause -->
 What is this deduced to?
 ```c++
-auto a = 5; 
+auto a = 5;
 ```
 <!-- pause -->
 To:
 ```c++
-int a = 5; 
+int a = 5;
 ```
 
 <!-- pause -->
@@ -62,7 +62,7 @@ auto f_1()
 <!-- pause -->
 To:
 ```c++
-int a = 5; 
+int a = 5;
 ```
 <!-- end_slide -->
 # lambdas
@@ -76,19 +76,19 @@ To:
 ```cpp
 class __lambda_1_10
 {
-  public: 
+  public:
   template<class type_parameter_0_0>
   inline /*constexpr */ auto operator()(type_parameter_0_0 c) const
   {
     return c;
   }
-  private: 
+  private:
   template<class type_parameter_0_0>
   static inline /*constexpr */ auto __invoke(type_parameter_0_0 c)
   {
     return __lambda_1_10{}.operator()<type_parameter_0_0>(c);
   }
-  
+
 };
 
 __lambda_1_10 l = __lambda_1_10{};
@@ -114,7 +114,7 @@ auto f_2() -> double
 <!-- pause -->
 too many autos makes c programmers cry
 ```cpp
-auto l2 = [](auto param) -> auto { return param; }; 
+auto l2 = [](auto param) -> auto { return param; };
 ```
 
 <!-- pause -->
@@ -144,7 +144,7 @@ struct Goo {
 <!-- pause -->
 what type is x?
 ```cpp
-decltype(foo()) x = 10; 
+decltype(foo()) x = 10;
 ```
 <!-- pause -->
 what type is z?
@@ -163,12 +163,12 @@ struct Goo {
 
 Why is this a compile error???
 ```cpp
-decltype(Goo::memberFunc()) wooops = 5; // error! 
+decltype(Goo::memberFunc()) wooops = 5; // error!
 ```
 <!-- pause -->
 Solving it with declval:
 ```cpp
-decltype(std::declval<Goo>().memberFunc()) better_now = 5; 
+decltype(std::declval<Goo>().memberFunc()) better_now = 5;
 ```
 <!-- end_slide -->
 
@@ -206,7 +206,7 @@ struct GenericStruct
   {
     std::cout << "generic struct is called" << std::endl;
   }
-  
+
 };
 ```
 
@@ -223,7 +223,7 @@ struct GenericStruct<int>
   {
     std::cout << "specialized struct is called" << std::endl;
   }
-  
+
   int x;
   long y;
 };
@@ -244,7 +244,7 @@ specialization on the first/second parameter
 template <class One>
 struct boo<One, char> {};
 ```
-Or 
+Or
 ```cpp
 template <class Two>
 struct boo<char, Two> {};
@@ -259,17 +259,18 @@ Chapter 2: SFINAE - substitution failure is not an error!
 
 # introducing SFINAE
 
-SFINAE is a technique that allows us to write code that will compile only 
+SFINAE is a technique that allows us to write code that will compile only
 if certain conditions are met.
 
-This allows us to 
+This allows us to
 <!-- incremental_lists: true -->
 * Erite generic code that will work for many types, but not all.
 * Catch errors at compile time.
 * Create powerful APIs that are flexible and generic.
 
 Let's look at this:
-```cpp {1|3-6|8-9|3-6, 11|3-6, 13-14}
+```cpp +exec {1|3-6|8-9|3-6, 11|3-6, 13-14 | 1-15}
+/// #include <iostream>
 struct ClassWithType {using type = int;};
 
 template <typename T>
@@ -280,10 +281,10 @@ void foo(T t, typename T::type x) {
 void callingFoo() {
     ClassWithType c;
 
-    foo(c, 5); 
+    foo(c, 5);
 
     //Compilation error!!! WHY?
-    foo(4, 4); 
+    foo(4, 4);
 }
 ```
 
@@ -310,8 +311,8 @@ void foo(T t, typename T::type x) {
 }
 
 ClassWithType c;
-foo(c, 5); 
-foo(4, 4); 
+foo(c, 5);
+foo(4, 4);
 ```
 
 <!-- pause -->
@@ -331,7 +332,9 @@ void foo(T t) {
 
 Confused? Me too! Let's look at real SFINAE.. (Now is the hard part finally)
 
-```cpp {1-4 | 6-9 | 12-15 | 18-21 | 24-27 | 31 | 31, 12-15 | 32, 1-4 | 32, 1-4, 12-15 | 33, 6-9 | 6-9, 18-21, 33 | 34 | 34, 24-27}
+```cpp +exec {1-4 | 6-9 | 12-15 | 18-21 | 24-27 | 31 | 31, 12-15 | 31, 1-4 | 31, 1-4, 12-15 | 32, 6-9 | 6-9, 18-21, 32 | 33 | 33, 24-27 | 1-34}
+/// #include <iostream>
+/// #include <type_traits>
 class WithCStr {
 public:
     const char* c_str() const { return "WithCStr"; }
@@ -360,7 +363,6 @@ auto PrintMe(T t) -> decltype(std::to_string(t), void()) {
     std::cout << std::to_string(t).c_str() << std::endl;
 }
 
-
 int main() {
     PrintMe(std::string{"hello"});
     PrintMe(WithCStr{});
@@ -376,7 +378,7 @@ Chapter 3: TYPE TRAITS
 <!-- end_slide -->
 
 # \#include <type_traits>
-Somewhere along the way, we got type traits. 
+Somewhere along the way, we got type traits.
 They are special template stucts that can create a compile type BOOL according to a template parameter
 <!-- pause -->
 
@@ -429,7 +431,7 @@ template <typename T, typename U>
 struct my_is_same : std::false_type {
     //constexpr static bool value = false;
 };
- 
+
 template <typename T>
 struct my_is_same<T, T> : std::true_type {
     //constexpr static bool value = true;
@@ -442,15 +444,23 @@ constexpr bool my_is_same_v = my_is_same<T, U>::value;
 
 <!-- pause -->
 Now I can do the following
-```cpp
-auto func() {return 5;}
-int d;
-static_assert(my_is_same_v<decltype(func()), int>, "func must return int!");
+```cpp +exec
+/// #include <type_traits>
+/// template <typename T, typename U>
+/// struct my_is_same : std::false_type {};
+/// template <typename T>
+/// struct my_is_same<T, T> : std::true_type {};
+/// template <typename T, typename U>
+/// constexpr bool my_is_same_v = my_is_same<T, U>::value;
+auto int_func() {return 5;}
+auto char_func() {return 'c';}
+static_assert(my_is_same_v<decltype(int_func()), int>, "int_func does not return int!");
+static_assert(my_is_same_v<decltype(char_func()), int>, "char_func does not return int!");
 ```
 
 <!-- end_slide -->
-# more examples! 
-Let's do something more complicated.. 
+# more examples!
+Let's do something more complicated..
 Our own type traits
 
 <!-- pause -->
@@ -474,17 +484,22 @@ struct has_c_str<T, decltype(std::declval<T>().c_str(), void())>  : std::is_same
 
 <!-- pause -->
 ```cpp +exec
-int main() {
+/// #include <iostream>
+/// template <typename T>
+/// struct is_pointer_or_reference : std::__or_<std::is_reference<T>, std::is_pointer<T>>::type {};
+/// template <typename T, typename = void>
+/// struct has_c_str : std::false_type {};
+/// template <typename T>
+/// struct has_c_str<T, decltype(std::declval<T>().c_str(), void())>  : std::is_same<decltype(std::declval<T>().c_str()), const char*>::type {};
+/// int main() {
+int x = 5;
+int& x_ref = x;
 
-    int x = 5;
-    int& x_ref = x;
-
-    std::cout << std::boolalpha << "is x a pointer or reference?   " << is_pointer_or_reference<decltype(x)>::value << std::endl;
-    std::cout << std::boolalpha << "is x_ref a pointer or reference?   " << is_pointer_or_reference<decltype(x_ref)>::value << std::endl;
-
-    std::cout << std::boolalpha << "does int have c_str?   " << has_c_str<int>::value << std::endl; 
-    std::cout << std::boolalpha << "does std::string have c_str?   " << has_c_str<std::string>::value << std::endl; 
-}
+std::cout << std::boolalpha << "is x a pointer or reference?   " << is_pointer_or_reference<decltype(x)>::value << std::endl;
+std::cout << std::boolalpha << "is x_ref a pointer or reference?   " << is_pointer_or_reference<decltype(x_ref)>::value << std::endl;
+std::cout << std::boolalpha << "does int have c_str?   " << has_c_str<int>::value << std::endl;
+std::cout << std::boolalpha << "does std::string have c_str?   " << has_c_str<std::string>::value << std::endl;
+/// }
 ```
 
 <!-- end_slide -->
@@ -564,41 +579,63 @@ Chapter 4.5: PRACTICE!!
 # benchmark
 Here is a cool benchmarking function.
 
-```cpp
+```cpp {1-12 | 1-2 | 3 | 5-7 | 9 | 6, 11 | 1-12}
 template <typename T, typename... Args>
-auto Benchmark(const char* name, T func, Args... args) -> decltype(func(args...)) {
+auto Benchmark(const char* name, T func, Args... args)
+  -> decltype(func(args...))
+{
     auto start = std::chrono::system_clock::now();
     auto result = func(args...);
     auto end = std::chrono::system_clock::now();
 
     std::cout << name << " took " << (end - start).count() << " ms" << std::endl;
-    
+
     return result;
 }
 ```
 <!-- pause -->
-What does it do??
-<!-- incremental_lists: true -->
-* Receives a name, function and arguments as paramters.
-* Runs the function
-* Prints to the screen how much time it took to run the functions
-* Returns whatever the benchmarked function returned
 
-<!-- pause -->
-```cpp
-    int x = Benchmark("test 1", []() { return 5; });
-    int y = Benchmark("test 2", [](int a, int b) { return  a + b; }, 10, 30);
-    Benchmark("test 1", []() { printf("haha\n"); });
+```cpp +exec
+/// #include <type_traits>
+/// #include <iostream>
+/// #include <chrono>
+/// template <typename T, typename... Args>
+/// auto Benchmark(const char* name, T func, Args... args) -> decltype(func(args...)) {
+///     auto start = std::chrono::system_clock::now();
+///     auto result = func(args...);
+///     auto end = std::chrono::system_clock::now();
+
+///     std::cout << name << " took " << (end - start).count() << " ms" << std::endl;
+///
+///     return result;
+/// }
+/// int main() {
+int x = Benchmark("test 1", []() { return 5; });
+int y = Benchmark("test 2", [](int a, int b) { return  a + b; }, 10, 30);
+/// }
 ```
-
-Cool.. Does it compile? What is the catch?....
 <!-- pause -->
 
 What happens when the argument function returns void?
-<!-- pause -->
-**error: return-statement with a value, in function returning ‘void’ [-fpermissive]**
-<!-- pause -->
-We need a way to run this function differently for functions returning value and for functions returning void!!
+```cpp +exec
+/// #include <type_traits>
+/// #include <iostream>
+/// #include <chrono>
+/// template <typename T, typename... Args>
+/// auto Benchmark(const char* name, T func, Args... args) -> decltype(func(args...)) {
+///     auto start = std::chrono::system_clock::now();
+///     auto result = func(args...);
+///     auto end = std::chrono::system_clock::now();
+
+///     std::cout << name << " took " << (end - start).count() << " ms" << std::endl;
+///
+///     return result;
+/// }
+/// int main() {
+    Benchmark("test 3", []() { printf("haha\n"); });
+/// }
+```
+
 <!-- end_slide -->
 # enable_if returns void/non-void
 First let's write the specialization for function returning void:
@@ -606,8 +643,8 @@ First let's write the specialization for function returning void:
 ## enable_if return type is void
 ```cpp {1-10 | 3 | 4 - 10 | 1-10}
 template <typename T, typename... Args>
-auto Benchmark(const char* name, T func, Args... args) -> 
-  typename std::enable_if<std::is_void<decltype(func(args...))>::value, void>::type 
+auto Benchmark(const char* name, T func, Args... args) ->
+  typename std::enable_if<std::is_void<decltype(func(args...))>::value, void>::type
 {
     auto start = std::chrono::system_clock::now();
     func(args...);
@@ -617,7 +654,7 @@ auto Benchmark(const char* name, T func, Args... args) ->
 }
 ```
 <!-- pause -->
-This actually turns to 
+This actually turns to
 ```cpp
 auto Benchmark(const char* name, T func, Args... args) -> void
 ```
@@ -627,8 +664,8 @@ For functions returning void or fails in substitution otherwise..
 The returning non void looks almost the same:
 ```cpp {1-12 | 3 | 4-12 | 1-12}
 template <typename T, typename... Args>
-auto Benchmark(const char* name, T func, Args... args) -> 
-  typename std::enable_if<!std::is_void<decltype(func(args...))>::value, decltype(func(args...))>::type 
+auto Benchmark(const char* name, T func, Args... args) ->
+  typename std::enable_if<!std::is_void<decltype(func(args...))>::value, decltype(func(args...))>::type
 {
     auto start = std::chrono::system_clock::now();
     auto result = func(args...);
@@ -639,6 +676,50 @@ auto Benchmark(const char* name, T func, Args... args) ->
     return result;
 }
 ```
+<!-- end_slide -->
+
+And now...
+```cpp +exec
+/// #include <type_traits>
+/// #include <iostream>
+/// #include <chrono>
+template <typename T, typename... Args>
+auto Benchmark(const char* name, T func, Args... args) ->
+  typename std::enable_if<!std::is_void<decltype(func(args...))>::value, decltype(func(args...))>::type
+/// {
+///     auto start = std::chrono::system_clock::now();
+///     auto result = func(args...);
+///     auto end = std::chrono::system_clock::now();
+///
+///     std::cout << name << " took " << (end - start).count() << " ms" << std::endl;
+///
+///     return result;
+/// }
+
+template <typename T, typename... Args>
+auto Benchmark(const char* name, T func, Args... args) ->
+  typename std::enable_if<std::is_void<decltype(func(args...))>::value, void>::type
+/// {
+///     auto start = std::chrono::system_clock::now();
+///     func(args...);
+///     auto end = std::chrono::system_clock::now();
+///
+///     std::cout << name << " took " << (end - start).count() << " ms" << std::endl;
+/// }
+
+int main() {
+    int x = Benchmark("test 1", []() { return 5; });
+    int y = Benchmark("test 2", [](int a, int b) { return  a + b; }, 10, 30);
+    Benchmark("test 3", []() { printf("yep!!\n"); });
+}
+```
+<!-- pause -->
+
+```bash +exec_replace
+cowsay -f stegosaurus WOW
+```
+
+
 <!-- end_slide -->
 <!-- jump_to_middle -->
 
@@ -710,7 +791,7 @@ Some examples:
 ```cpp {1-6 | 1-2 | 5-6 | 1-6}
 template<class T, class = void>
 struct has_type_member : std::false_type {};
- 
+
 // specialization recognizes types that do have a nested ::type member:
 template<class T>
 struct has_type_member<T, std::void_t<typename T::type>> : std::true_type {};
@@ -721,7 +802,7 @@ struct has_type_member<T, std::void_t<typename T::type>> : std::true_type {};
 ```cpp {1-8 | 1-2 | 4-8 | 1-8}
 template<class, class = void>
 struct has_pre_increment_member : std::false_type {};
- 
+
 // specialization recognizes types that do support pre-increment:
 template<class T>
 struct has_pre_increment_member<T,
@@ -758,8 +839,9 @@ concept HasCStr = requires(T t) {
 ```
 
 <!-- pause -->
-please note that std::same_as is not same as std::is_same (shit!)
-std::same_as is a concept while std::is_same is a type_trait
+```bash +exec_replace
+cowsay "Improtant! std::same_as is not same as std::is_same! std::same_as is a concept while std::is_same is a type_trait"
+```
 <!-- pause -->
 
 <!-- end_slide -->
@@ -803,7 +885,7 @@ Concepts are a very powerful tool.
 Togather with constexper/consteval they are a huge step for compile time programming.
 
 <!-- pause -->
-With concepts you don't need to pass a type to a function, 
+With concepts you don't need to pass a type to a function,
 you can pass any thing that is convertible to that type or only what the type should do
 and create more generic code in compile time.
 
@@ -862,8 +944,7 @@ Rust is a new (compared to C++) programming language that aims to be as efficien
 <!-- pause -->
 One of the main features of rust is the trait system that is much like the C++ concept system but not duck typed.
 <!-- end_slide -->
-Here is some rust primer code
-```rust {1-41 | 1-3 | 5-14 | 16-18 | 20-31 | 16-18, 33-35 | 37-40}
+```rust +exec {1-41 | 1-3 | 5-14 | 16-18 | 20-31 | 16-18, 33-35 | 37-40}
 struct StringStruct {
     string: [u8; 80],
 }
@@ -908,5 +989,6 @@ fn main() {
 <!-- end_slide -->
 <!-- jump_to_middle -->
 
-QUESTIONS?
-===
+```bash +exec_replace
+cowsay -f turtle QUESTIONS?
+```

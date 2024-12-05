@@ -10,6 +10,17 @@ Prior knowledge of CPP is assumed.
 disclaimer: This is not a tutorial/guide. It is not written to be fully comprehensive only by reading.
 I use this code while talking and explaining to illustrate ideas.
 
+## running the slides:
+There is a possibility of running this talk as a presentation in the terminal
+
+To run the slides in the terminal one needs the next things:
+- cowsay (`sudo apt install cowsay`)
+- presenterm (`cargo install --locked presenterm`)
+- nothing else to do for like 1.5 hours
+
+This is how you run it then:
+`presenterm -x slides.md`
+
 ## one.cpp
 New CPP abilites required for understanding later concepts
 
