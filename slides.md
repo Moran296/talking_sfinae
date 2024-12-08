@@ -101,7 +101,7 @@ __lambda_1_10 l = __lambda_1_10{};
 <!-- new_lines: 10 -->
 
 
-Do you know the arrow return value syntax?
+Do you know the trailing return value syntax?
 
 <!-- pause -->
 ```cpp
@@ -604,9 +604,7 @@ auto Benchmark(const char* name, T func, Args... args)
 ///     auto start = std::chrono::system_clock::now();
 ///     auto result = func(args...);
 ///     auto end = std::chrono::system_clock::now();
-
 ///     std::cout << name << " took " << (end - start).count() << " ms" << std::endl;
-///
 ///     return result;
 /// }
 /// int main() {
@@ -626,9 +624,7 @@ What happens when the argument function returns void?
 ///     auto start = std::chrono::system_clock::now();
 ///     auto result = func(args...);
 ///     auto end = std::chrono::system_clock::now();
-
 ///     std::cout << name << " took " << (end - start).count() << " ms" << std::endl;
-///
 ///     return result;
 /// }
 /// int main() {
