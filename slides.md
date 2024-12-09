@@ -62,7 +62,10 @@ auto f_1()
 <!-- pause -->
 To:
 ```c++
-int a = 5;
+int f_1()
+{
+     return 5;
+}
 ```
 <!-- end_slide -->
 # lambdas
@@ -162,13 +165,23 @@ struct Goo {
 ```
 
 Why is this a compile error???
-```cpp
+```cpp +exec
+/// struct Goo {
+/// static char staticFunc() { return 'a'; }
+/// long memberFunc() { return 5; }
+/// };
 decltype(Goo::memberFunc()) wooops = 5; // error!
 ```
 <!-- pause -->
 Solving it with declval:
-```cpp
+```cpp +exec
+/// #include <utility>
+/// struct Goo {
+/// static char staticFunc() { return 'a'; }
+/// long memberFunc() { return 5; }
+/// };
 decltype(std::declval<Goo>().memberFunc()) better_now = 5;
+/// int main() {return 0;}
 ```
 <!-- end_slide -->
 
@@ -264,9 +277,10 @@ if certain conditions are met.
 
 This allows us to
 <!-- incremental_lists: true -->
-* Erite generic code that will work for many types, but not all.
-* Catch errors at compile time.
+* Write generic code that will work for many types, but not all.
+* Catch bugs at compile time.
 * Create powerful APIs that are flexible and generic.
+<!-- pause -->
 
 Let's look at this:
 ```cpp +exec {1|3-6|8-9|3-6, 11|3-6, 13-14 | 1-15}
@@ -391,7 +405,7 @@ template <typename T>
 constexpr bool is_pointer = std::is_pointer<T>::value; // true if T is a pointer, false otherwise
 
 template <typename T>
-constexpr bool is_reference = std::is_base_of<std::string, T>::value; // true if T is inherited from string, false otherwise
+constexpr bool is_base_of_string = std::is_base_of<std::string, T>::value; // true if T is inherited from string, false otherwise
 ```
 <!-- pause -->
 
